@@ -79,8 +79,7 @@
 	const tag_yuanpi_Inner = "<b style='background-image: -webkit-linear-gradient(left, #2d97ff, #FF00FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_yuanpi + "</b>"
 
 	const blog = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?&host_mid='
-	const is_new = document.getElementsByClassName('item goback')
-		.length != 0 // 检测是不是新版
+	const is_new = document.getElementsByClassName('item goback').length != 0 // 检测是不是新版
 
 	const get_pid = (c) => {
 		if (is_new) {
