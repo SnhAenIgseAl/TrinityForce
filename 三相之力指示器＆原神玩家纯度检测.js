@@ -239,7 +239,7 @@
 							let st = JSON.stringify(JSON.parse(res.response)
 								.data)
 							unknown.delete(pid)
-							//新版B站跨国家
+							//新版B站跨框架
 							//原批标签
 							if (st.includes(keyword_yuanpi) && st.includes(keyword_yuan)) {
 								c.innerHTML += tag_yuanpi_Inner
