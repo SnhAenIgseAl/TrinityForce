@@ -292,7 +292,9 @@
 								c.innerHTML += tag_nong_Inner
 								nongyou.add(pid)
 								return
-							} else if (st.includes(keyword_cj)) {
+							} 
+							//抽奖标签
+							else if (st.includes(keyword_cj)) {
 								c.innerHTML += tag_cj_Inner
 								cj.add(pid)
 								return
