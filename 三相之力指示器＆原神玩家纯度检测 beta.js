@@ -173,36 +173,34 @@
 							 * 新版B站框架
 							 */
 							
-							//原批标签
-							if (st.includes(keyword_yuanpi) && st.includes(keyword_yuanpi)) {
-								c.innerHTML += tag_yuanpi_Inner
-								yuanpi.add(pid)
-							}
-							//仙蛆标签
-							if (st.includes(keyword_xian)) {
-								c.innerHTML += tag_xian_Inner
-								xian.add(pid)
-							}
-							
-							//米三标签
-							if (st.includes(keyword_yuan) && st.includes(keyword_beng) && st.includes(keyword_qiong)) {
-								c.innerHTML += tag_misan_Inner
-								misan.add(pid)
-								yuan_weight()
-								return
-							}
-							//三相标签
-							else if (st.includes(keyword_yuan) && st.includes(keyword_nong) && st.includes(keyword_zhou)) {
-								c.innerHTML += tag_sanxiang_Inner
-								sanxiang.add(pid)
-								yuan_weight()
-								return
-							}
-							
 							//原神相关
 							if (st.includes(keyword_yuan)) {
+								//原批标签
+								if (st.includes(keyword_yuanpi)) {
+									c.innerHTML += tag_yuanpi_Inner
+									yuanpi.add(pid)
+								}
+								//仙蛆标签
+								if (st.includes(keyword_xian)) {
+									c.innerHTML += tag_xian_Inner
+									xian.add(pid)
+								}
+								//米三标签
+								if (st.includes(keyword_beng) && st.includes(keyword_qiong)) {
+									c.innerHTML += tag_misan_Inner
+									misan.add(pid)
+									yuan_weight()
+									return
+								}
+								//三相标签
+								else if (st.includes(keyword_nong) && st.includes(keyword_zhou)) {
+									c.innerHTML += tag_sanxiang_Inner
+									sanxiang.add(pid)
+									yuan_weight()
+									return
+								}
 								//原穹标签
-								if (st.includes(keyword_qiong)) {
+								else if (st.includes(keyword_qiong)) {
 									c.innerHTML += tag_yuanqiong_Inner
 									yuanqiong.add(pid)
 									yuan_weight()
