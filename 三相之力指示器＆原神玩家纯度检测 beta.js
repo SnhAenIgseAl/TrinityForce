@@ -137,7 +137,7 @@
 				let pid = get_pid(c)
 
 				if (yuanpi.has(pid))	return
-				if (xian.has(pid))	return
+				if (xian.has(pid))		return
 				if (misan.has(pid))	return
 				if (sanxiang.has(pid))	return
 				if (yuanqiong.has(pid))	return
