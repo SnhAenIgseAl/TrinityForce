@@ -290,7 +290,7 @@
 								else if (count > 5 && count <= 10)	c.innerHTML += tag_mxz_2_Inner
 								else if (count > 10 && count <= 20)	c.innerHTML += tag_mxz_3_Inner
 								else if (count > 20 && count <= 30)	c.innerHTML += tag_mxz_4_Inner
-								else								c.innerHTML += tag_mxz_5_Inner
+								else					c.innerHTML += tag_mxz_5_Inner
 								
 								//原神抽奖标签
 								if (st.includes(keyword_cj_yuan)) {
