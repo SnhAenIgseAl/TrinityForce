@@ -247,7 +247,7 @@
 								//农友标签
 								else {
 									c.innerHTML += tag_nong_Inner
-									nong.add(pid)
+									nongyou.add(pid)
 									return
 								}
 							}
