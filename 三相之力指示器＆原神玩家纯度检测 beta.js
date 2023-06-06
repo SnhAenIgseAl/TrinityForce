@@ -138,7 +138,7 @@
 
 				if (yuanpi.has(pid))	return
 				if (xian.has(pid))		return
-				if (misan.has(pid))	return
+				if (misan.has(pid))		return
 				if (sanxiang.has(pid))	return
 				if (yuanqiong.has(pid))	return
 				if (yuanbeng.has(pid))	return
@@ -148,8 +148,8 @@
 				if (nongzhou.has(pid))	return
 				if (zhouyou.has(pid))	return
 				if (nongyou.has(pid))	return
-				if (cj.has(pid))	return
-				if (nor.has(pid))	return
+				if (cj.has(pid))		return
+				if (nor.has(pid))		return
 
 				unknown.add(pid)
 				//console.log(pid)
@@ -293,7 +293,7 @@
 								else if (count > 5 && count <= 10)	c.innerHTML += tag_mxz_2_Inner
 								else if (count > 10 && count <= 20)	c.innerHTML += tag_mxz_3_Inner
 								else if (count > 20 && count <= 30)	c.innerHTML += tag_mxz_4_Inner
-								else					c.innerHTML += tag_mxz_5_Inner
+								else								c.innerHTML += tag_mxz_5_Inner
 
 								//原神抽奖标签
 								if (st.includes(keyword_cj_yuan)) {
