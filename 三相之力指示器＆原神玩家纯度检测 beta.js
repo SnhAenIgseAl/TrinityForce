@@ -137,8 +137,8 @@
 				let pid = get_pid(c)
 				
 				if (yuanpi.has(pid)) 	return
-				if (xian.has(pid))		return
-				if (misan.has(pid))		return
+				if (xian.has(pid))	return
+				if (misan.has(pid))	return
 				if (sanxiang.has(pid))	return
 				if (yuanqiong.has(pid))	return
 				if (yuanbeng.has(pid))	return
@@ -148,8 +148,8 @@
 				if (nongzhou.has(pid))	return
 				if (zhouyou.has(pid))	return
 				if (nongyou.has(pid))	return
-				if (cj.has(pid))		return
-				if (nor.has(pid))		return
+				if (cj.has(pid))	return
+				if (nor.has(pid))	return
  
 				unknown.add(pid)
 				//console.log(pid)
