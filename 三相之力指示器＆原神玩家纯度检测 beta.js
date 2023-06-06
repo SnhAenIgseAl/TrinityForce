@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         三相之力指示器＆原神玩家纯度检测
 // @namespace    www.cber.ltd
-// @version      0.5.5
+// @version      0.5.6
 // @description  B站评论区自动标注原农舟玩家，依据是动态里是否有相关内容（基于原神指示器和原三相一些小的修改）及原神玩家纯度检测
 // @author       xulaupuz & nightswan & SnhAenIgseAl
 // @match        https://www.bilibili.com/video/*
@@ -15,13 +15,13 @@
 // @license MIT
 // @run-at document-end
 // ==/UserScript==
- 
- 
- 
+
+
+
 (function() {
 	'use strict';
 	const unknown = new Set()
- 
+
 	//成分，可自定义
 	const nor = new Set()
 	const cj = new Set()
@@ -38,7 +38,7 @@
 	const sanxiang = new Set()
 	const misan = new Set()
 	const yuanpi = new Set()
- 
+
 	//关键词，可自定义
 	const keyword_cj = "互动抽奖"
 	const keyword_cj_yuan = "互动抽奖 #原神#"
@@ -49,7 +49,7 @@
 	const keyword_qiong = "星穹铁道"
 	const keyword_xian = "全自动"
 	const keyword_yuanpi = "猴"
- 
+
 	//贴上标签，可自定义
 	const tag_nor = "【 普通丨待定 】"
 	const tag_cj = "【 动态抽奖 】"
@@ -67,14 +67,14 @@
 	const tag_sanxiang = "【 传奇丨三相之力 】"
 	const tag_misan = "【 传奇丨三位一体 】"
 	const tag_yuanpi = "【 结晶丨原批 】"
- 
+
 	//原神玩家纯度标签
 	const tag_mxz_1 = "【 米学长丨认识Mihoyo 】"
 	const tag_mxz_2 = "【 米学长丨腾讯打压 】"
 	const tag_mxz_3 = "【 米学长丨黑暗降临 】"
 	const tag_mxz_4 = "【 米学长丨国产之光 】"
 	const tag_mxz_5 = "【 米学长丨Mihoyo是天 】"
- 
+
 	//标签颜色，可自定义，默认为B站会员色
 	const tag_nor_Inner = "<b style='color: #778899'>" + tag_nor + "</b>"
 	const tag_cj_Inner = "<b style='color: #4dc35e'>" + tag_cj + "</b>"
@@ -91,17 +91,17 @@
 	const tag_sanxiang_Inner = "<b style='background-image: -webkit-linear-gradient(left, #ffa500, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_sanxiang + "</b>"
 	const tag_misan_Inner = "<b style='background-image: -webkit-linear-gradient(left, #ffa500, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_misan + "</b>"
 	const tag_yuanpi_Inner = "<b style='background-image: -webkit-linear-gradient(left, #2d97ff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_yuanpi + "</b>"
-	 
+
 	const tag_mxz_1_Inner = "<b style='color: #4dc35e'>" + tag_mxz_1 + "</b>"
 	const tag_mxz_2_Inner = "<b style='color: #2d97ff'>" + tag_mxz_2 + "</b>"
 	const tag_mxz_3_Inner = "<b style='color: #b32ffb'>" + tag_mxz_3 + "</b>"
 	const tag_mxz_4_Inner = "<b style='background-image: -webkit-linear-gradient(left, #ff8c00, #fb4619); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_mxz_4 + "</b>"
 	const tag_mxz_5_Inner = "<b style='background-image: -webkit-linear-gradient(left, #00e0ee, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_mxz_5 + "</b>"
- 
+
 	const blog = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?&host_mid='
 	const is_new = true
 	// const is_new = document.getElementsByClassName('item goback').length != 0 // 检测是不是新版
- 
+
 	const get_pid = (c) => {
 		if (is_new) {
 			return c.dataset['userId']
@@ -109,7 +109,7 @@
 			//return c.children[0]['href'].replace(/[^\d]/g, "")
 		}
 	}
- 
+
 	const get_comment_list = () => {
 		if (is_new) {
 			let lst = new Set()
@@ -124,9 +124,9 @@
 			//return document.getElementsByClassName('user')
 		}
 	}
- 
+
 	console.log(is_new)
- 
+
 	console.log("正常加载")
 	let jiance = setInterval(() => {
 		let commentlist = get_comment_list()
@@ -135,10 +135,10 @@
 			let list = Array.from(commentlist)
 			list.forEach(c => {
 				let pid = get_pid(c)
-				
-				if (yuanpi.has(pid)) 	return
-				if (xian.has(pid))	return
-				if (misan.has(pid))	return
+
+				if (yuanpi.has(pid))	return
+				if (xian.has(pid))		return
+				if (misan.has(pid))		return
 				if (sanxiang.has(pid))	return
 				if (yuanqiong.has(pid))	return
 				if (yuanbeng.has(pid))	return
@@ -148,9 +148,9 @@
 				if (nongzhou.has(pid))	return
 				if (zhouyou.has(pid))	return
 				if (nongyou.has(pid))	return
-				if (cj.has(pid))	return
-				if (nor.has(pid))	return
- 
+				if (cj.has(pid))		return
+				if (nor.has(pid))		return
+
 				unknown.add(pid)
 				//console.log(pid)
 				let blogurl = blog + pid
@@ -165,41 +165,44 @@
 					onload: function(res) {
 						if (res.status === 200) {
 							//console.log('成功')
-							let st = JSON.stringify(JSON.parse(res.response).data)
+							let st = JSON.stringify(JSON.parse(res.response)
+								.data)
 							unknown.delete(pid)
-							
+
 							/**
 							 * 新版B站框架
 							 */
 							
+							//原批标签
+							if (st.includes(keyword_yuanpi) && st.includes(keyword_yuanpi)) {
+								c.innerHTML += tag_yuanpi_Inner
+								yuanpi.add(pid)
+							}
 							//仙蛆标签
 							if (st.includes(keyword_xian)) {
 								c.innerHTML += tag_xian_Inner
 								xian.add(pid)
 							}
+							
+							//米三标签
+							if (st.includes(keyword_yuan) && st.includes(keyword_beng) && st.includes(keyword_qiong)) {
+								c.innerHTML += tag_misan_Inner
+								misan.add(pid)
+								yuan_weight()
+								return
+							}
+							//三相标签
+							else if (st.includes(keyword_yuan) && st.includes(keyword_nong) && st.includes(keyword_zhou)) {
+								c.innerHTML += tag_sanxiang_Inner
+								sanxiang.add(pid)
+								yuan_weight()
+								return
+							}
+							
 							//原神相关
 							if (st.includes(keyword_yuan)) {
-								//原批标签
-								if (st.includes(keyword_yuanpi)) {
-									c.innerHTML += tag_yuanpi_Inner
-									yuanpi.add(pid)
-								}
-								//米三标签
-								if (st.includes(keyword_beng) && st.includes(keyword_qiong)) {
-									c.innerHTML += tag_misan_Inner
-									misan.add(pid)
-									yuan_weight()
-									return
-								}
-								//三相标签
-								else if (st.includes(keyword_nong) && st.includes(keyword_zhou)) {
-									c.innerHTML += tag_sanxiang_Inner
-									sanxiang.add(pid)
-									yuan_weight()
-									return
-								}
 								//原穹标签
-								else if (st.includes(keyword_qiong)) {
+								if (st.includes(keyword_qiong)) {
 									c.innerHTML += tag_yuanqiong_Inner
 									yuanqiong.add(pid)
 									yuan_weight()
@@ -234,7 +237,7 @@
 									return
 								}
 							}
-							
+
 							//王者荣耀相关
 							else if (st.includes(keyword_nong)) {
 								//农粥标签
@@ -250,7 +253,7 @@
 									return
 								}
 							}
-							
+
 							//明日方舟相关
 							//粥友标签
 							else if (st.includes(keyword_zhou)) {
@@ -258,20 +261,20 @@
 								zhouyou.add(pid)
 								return
 							}
-							
+
 							//抽奖标签
 							else if (st.includes(keyword_cj)) {
 								c.innerHTML += tag_cj_Inner
 								cj.add(pid)
 								return
 							}
-							
+
 							//纯良标签
 							else {
 								c.innerHTML += tag_nor_Inner
 								nor.add(pid)
 							}
-							
+
 							//判断给定字符串出现次数
 							function getStrCount(scrstr, armstr) {
 								let count = 0
@@ -281,17 +284,17 @@
 								}
 								return count
 							}
-							
+
 							//原神玩家纯度检测
 							function yuan_weight() {
 								let count = getStrCount(st, keyword_yuan)
-								
+
 								if (count >= 0 && count <= 5)		c.innerHTML += tag_mxz_1_Inner
 								else if (count > 5 && count <= 10)	c.innerHTML += tag_mxz_2_Inner
 								else if (count > 10 && count <= 20)	c.innerHTML += tag_mxz_3_Inner
 								else if (count > 20 && count <= 30)	c.innerHTML += tag_mxz_4_Inner
-								else					c.innerHTML += tag_mxz_5_Inner
-								
+								else								c.innerHTML += tag_mxz_5_Inner
+
 								//原神抽奖标签
 								if (st.includes(keyword_cj_yuan)) {
 									c.innerHTML += tag_cj_yuan_Inner
