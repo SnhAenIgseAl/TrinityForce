@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         三相之力指示器＆原神玩家纯度检测 Beta
 // @namespace    www.cber.ltd
-// @version      0.6.0
+// @version      0.6.1
 // @description  B站评论区自动标注原农舟玩家，依据是动态里是否有相关内容（基于原神指示器和原三相一些小的修改）及原神玩家纯度检测
 // @author       xulaupuz & nightswan & SnhAenIgseAl
 // @match        https://www.bilibili.com/video/*
@@ -99,14 +99,14 @@
 	const tag_mxz_5_Inner = "<b style='background-image: -webkit-linear-gradient(left, #00e0ee, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_mxz_5 + "</b>"
 
 	const blog = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?&host_mid='
-	const is_new = true
-	// const is_new = document.getElementsByClassName('item goback').length != 0 // 检测是不是新版
+	// const is_new = true
+	const is_new = document.getElementsByClassName('fixed-header').length != 0 ? true : false
 
 	const get_pid = (c) => {
 		if (is_new) {
 			return c.dataset['userId']
 		} else {
-			//return c.children[0]['href'].replace(/[^\d]/g, "")
+			return c.children[0]['href'].replace(/[^\d]/g, "")
 		}
 	}
 
@@ -121,7 +121,7 @@
 			}
 			return lst
 		} else {
-			//return document.getElementsByClassName('user')
+			return document.getElementsByClassName('user')
 		}
 	}
 
@@ -279,9 +279,9 @@
 							}
 							
 							//判断是否有关键词
-							function hasKeyword(st, keyword) {
+							function hasKeyword(str, keyword) {
 								for (let i = 0, j = keyword.length; i < j; i++) {
-									if (st.includes(keyword[i])) {
+									if (str.includes(keyword[i])) {
 										return true
 									} else {
 										continue
