@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         三相之力指示器＆原神玩家纯度检测 Beta
 // @namespace    www.cber.ltd
-// @version      0.6.1
+// @version      0.7.0
 // @description  B站评论区自动标注原农舟玩家，依据是动态里是否有相关内容（基于原神指示器和原三相一些小的修改）及原神玩家纯度检测
 // @author       xulaupuz & nightswan & SnhAenIgseAl
 // @match        https://www.bilibili.com/video/*
@@ -18,9 +18,12 @@
 
 
 
-(function() {
+(function () {
 	'use strict';
 	const unknown = new Set()
+
+	// 是否使用cookie
+	const useCookie = false
 
 	//成分，可自定义
 	const nor = new Set()
@@ -99,12 +102,13 @@
 	const tag_mxz_5_Inner = "<b style='background-image: -webkit-linear-gradient(left, #00e0ee, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>" + tag_mxz_5 + "</b>"
 
 	const blog = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?&host_mid='
-	// const is_new = true
-	const is_new = document.getElementsByClassName('fixed-header').length != 0 ? true : false
+	const is_new = true
+	// const is_new = document.getElementsByClassName('fixed-header').length != 0 ? true : false
 
 	const get_pid = (c) => {
 		if (is_new) {
-			return c.dataset['userId']
+			return c.getAttribute('data-user-profile-id');
+			// return c.dataset['userId']
 		} else {
 			return c.children[0]['href'].replace(/[^\d]/g, "")
 		}
@@ -112,13 +116,56 @@
 
 	const get_comment_list = () => {
 		if (is_new) {
+
 			let lst = new Set()
-			for (let c of document.getElementsByClassName('user-name')) {
-				lst.add(c)
+
+			for (let i of document.getElementsByTagName('bili-comments')) {
+				let commentListDom = i.shadowRoot.getElementById('feed')
+
+				for (let c of commentListDom.getElementsByTagName('bili-comment-thread-renderer')) {
+					// console.log(c)
+					let userNameDom = c.shadowRoot
+						.getElementById('comment').shadowRoot
+						.getElementById('header')
+						.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
+						.getElementById('user-name')
+					// 	.getElementsByTagName('a')[0]
+
+					// console.log(userNameDom)
+					lst.add(userNameDom)
+
+					let hasReplies = c.shadowRoot
+						.getElementById('replies')
+						.getElementsByTagName('bili-comment-replies-renderer')[0].shadowRoot
+						.getElementById('expander-contents')
+						.getElementsByTagName('bili-comment-reply-renderer')[0]
+
+					if (hasReplies) {
+						let repliesDom = hasReplies.shadowRoot
+							.getElementById('main')
+							.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
+							.getElementById('user-name')
+						lst.add(repliesDom)
+					}
+
+					// let repliesDom = c.shadowRoot
+					// 	.getElementById('replies')
+					// 	.getElementsByTagName('bili-comment-replies-renderer')[0].shadowRoot
+					// 	.getElementById('expander-contents')
+					// 	.getElementsByTagName('bili-comment-reply-renderer')[0].shadowRoot
+					// 	.getElementById('main')
+					// 	.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
+					// 	.getElementById('user-name')
+					// lst.add(repliesDom)
+				}
 			}
-			for (let c of document.getElementsByClassName('sub-user-name')) {
-				lst.add(c)
-			}
+
+			// for (let c of document.getElementsByClassName('user-name')) {
+			// 	lst.add(c)
+			// }
+			// for (let c of document.getElementsByClassName('sub-user-name')) {
+			// 	lst.add(c)
+			// }
 			return lst
 		} else {
 			return document.getElementsByClassName('user')
@@ -130,26 +177,28 @@
 	console.log("正常加载")
 	let jiance = setInterval(() => {
 		let commentlist = get_comment_list()
+		// console.log(commentlist)
+
 		if (commentlist.length != 0) {
 			// clearInterval(jiance)
 			let list = Array.from(commentlist)
 			list.forEach(c => {
 				let pid = get_pid(c)
 
-				if (yuanpi.has(pid))	return
-				if (xian.has(pid))		return
-				if (misan.has(pid))		return
-				if (sanxiang.has(pid))	return
-				if (yuanqiong.has(pid))	return
-				if (yuanbeng.has(pid))	return
-				if (yuannong.has(pid))	return
-				if (yuanzhou.has(pid))	return
-				if (yuanyou.has(pid))	return
-				if (nongzhou.has(pid))	return
-				if (zhouyou.has(pid))	return
-				if (nongyou.has(pid))	return
-				if (cj.has(pid))		return
-				if (nor.has(pid))		return
+				if (yuanpi.has(pid)) return
+				if (xian.has(pid)) return
+				if (misan.has(pid)) return
+				if (sanxiang.has(pid)) return
+				if (yuanqiong.has(pid)) return
+				if (yuanbeng.has(pid)) return
+				if (yuannong.has(pid)) return
+				if (yuanzhou.has(pid)) return
+				if (yuanyou.has(pid)) return
+				if (nongzhou.has(pid)) return
+				if (zhouyou.has(pid)) return
+				if (nongyou.has(pid)) return
+				if (cj.has(pid)) return
+				if (nor.has(pid)) return
 
 				unknown.add(pid)
 				//console.log(pid)
@@ -160,9 +209,10 @@
 					url: blogurl,
 					data: '',
 					headers: {
+						'cookie': useCookie ? document.cookie : null,
 						'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
 					},
-					onload: function(res) {
+					onload: function (res) {
 						if (res.status === 200) {
 							//console.log('成功')
 							let st = JSON.stringify(JSON.parse(res.response).data)
@@ -171,7 +221,7 @@
 							/**
 							 * 新版B站框架
 							 */
-							
+
 							/**
 							 * 原神相关
 							 */
@@ -277,7 +327,7 @@
 								c.innerHTML += tag_nor_Inner
 								nor.add(pid)
 							}
-							
+
 							//判断是否有关键词
 							function hasKeyword(str, keyword) {
 								for (let i = 0, j = keyword.length; i < j; i++) {
@@ -306,11 +356,11 @@
 							function yuan_weight() {
 								let count = getStrCount(st, keyword_yuan)
 
-								if (count >= 0 && count <= 5)		c.innerHTML += tag_mxz_1_Inner
-								else if (count > 5 && count <= 10)	c.innerHTML += tag_mxz_2_Inner
-								else if (count > 10 && count <= 20)	c.innerHTML += tag_mxz_3_Inner
-								else if (count > 20 && count <= 30)	c.innerHTML += tag_mxz_4_Inner
-								else								c.innerHTML += tag_mxz_5_Inner
+								if (count >= 0 && count <= 5) c.innerHTML += tag_mxz_1_Inner
+								else if (count > 5 && count <= 10) c.innerHTML += tag_mxz_2_Inner
+								else if (count > 10 && count <= 20) c.innerHTML += tag_mxz_3_Inner
+								else if (count > 20 && count <= 30) c.innerHTML += tag_mxz_4_Inner
+								else c.innerHTML += tag_mxz_5_Inner
 
 								//原神抽奖标签
 								if (hasKeyword(st, keyword_cj_yuan)) {
