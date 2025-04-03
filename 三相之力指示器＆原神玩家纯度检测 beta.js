@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         三相之力指示器＆原神玩家纯度检测 Beta
 // @namespace    www.cber.ltd
-// @version      0.7.0
+// @version      0.7.1
 // @description  B站评论区自动标注原农舟玩家，依据是动态里是否有相关内容（基于原神指示器和原三相一些小的修改）及原神玩家纯度检测
 // @author       xulaupuz & nightswan & SnhAenIgseAl
 // @match        https://www.bilibili.com/video/*
@@ -105,6 +105,10 @@
 	const is_new = true
 	// const is_new = document.getElementsByClassName('fixed-header').length != 0 ? true : false
 
+	const sleep = (time) => {
+		return new Promise((resolve) => setTimeout(resolve, time));
+	}
+
 	const get_pid = (c) => {
 		if (is_new) {
 			return c.getAttribute('data-user-profile-id');
@@ -119,12 +123,12 @@
 
 			let lst = new Set()
 
-			for (let i of document.getElementsByTagName('bili-comments')) {
-				let commentListDom = i.shadowRoot.getElementById('feed')
+			for (let comments of document.getElementsByTagName('bili-comments')) {
+				let commentListDom = comments.shadowRoot.getElementById('feed')
 
-				for (let c of commentListDom.getElementsByTagName('bili-comment-thread-renderer')) {
+				for (let commentRenderer of commentListDom.getElementsByTagName('bili-comment-thread-renderer')) {
 					// console.log(c)
-					let userNameDom = c.shadowRoot
+					let userNameDom = commentRenderer.shadowRoot
 						.getElementById('comment').shadowRoot
 						.getElementById('header')
 						.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
@@ -134,38 +138,24 @@
 					// console.log(userNameDom)
 					lst.add(userNameDom)
 
-					let hasReplies = c.shadowRoot
+					let hasReplies = commentRenderer.shadowRoot
 						.getElementById('replies')
 						.getElementsByTagName('bili-comment-replies-renderer')[0].shadowRoot
 						.getElementById('expander-contents')
-						.getElementsByTagName('bili-comment-reply-renderer')[0]
+						.getElementsByTagName('bili-comment-reply-renderer')
 
 					if (hasReplies) {
-						let repliesDom = hasReplies.shadowRoot
-							.getElementById('main')
-							.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
-							.getElementById('user-name')
-						lst.add(repliesDom)
+						for (let replies of hasReplies) {
+							let repliesDom = replies.shadowRoot
+								.getElementById('main')
+								.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
+								.getElementById('user-name')
+							lst.add(repliesDom)
+						}
 					}
-
-					// let repliesDom = c.shadowRoot
-					// 	.getElementById('replies')
-					// 	.getElementsByTagName('bili-comment-replies-renderer')[0].shadowRoot
-					// 	.getElementById('expander-contents')
-					// 	.getElementsByTagName('bili-comment-reply-renderer')[0].shadowRoot
-					// 	.getElementById('main')
-					// 	.getElementsByTagName('bili-comment-user-info')[0].shadowRoot
-					// 	.getElementById('user-name')
-					// lst.add(repliesDom)
 				}
 			}
 
-			// for (let c of document.getElementsByClassName('user-name')) {
-			// 	lst.add(c)
-			// }
-			// for (let c of document.getElementsByClassName('sub-user-name')) {
-			// 	lst.add(c)
-			// }
 			return lst
 		} else {
 			return document.getElementsByClassName('user')
@@ -182,7 +172,7 @@
 		if (commentlist.length != 0) {
 			// clearInterval(jiance)
 			let list = Array.from(commentlist)
-			list.forEach(c => {
+			list.forEach(async (c) => {
 				let pid = get_pid(c)
 
 				if (yuanpi.has(pid)) return
@@ -372,8 +362,10 @@
 							console.log('失败')
 							console.log(res)
 						}
-					},
+					}
 				});
+
+				await sleep(100)
 			});
 		}
 	}, 4000)
